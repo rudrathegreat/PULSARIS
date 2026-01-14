@@ -10,6 +10,16 @@ body {
     color: black;
 }
 
+::-webkit-scrollbar {
+    width: 10px;
+    background: white;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #19b563;
+    border-radius: 10px;
+}
+
 .top-bar {
     height: 80px;
     width: 100%;
@@ -288,11 +298,5 @@ button:hover {
 @media (max-width: 768px) {
     .cands-info {
         flex-direction: column;
-    }
-}
-
-@media (min-width: 1200px) {
-    body {
-        overflow: hidden;
     }
 }
