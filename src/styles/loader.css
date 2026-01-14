@@ -1,0 +1,95 @@
+/* loader.css */
+
+.loader-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.loader-container h1 {
+  font-size: 48px;
+  font-weight: 400;
+}
+
+.loader-container h1 span {
+  color: #19b563;
+  font-weight: 700;
+}
+
+.loader-inputs {
+  display: flex;
+  gap: 60px;
+}
+
+.loader-inputs label {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.loader-inputs input[type="file"] {
+  border: 1px solid #dcdcdc;
+  padding: 15px 25px;
+  border-radius: 6px;
+  width: 270px;
+  cursor: pointer;
+}
+
+::-webkit-file-upload-button {
+  border: none;
+  outline: none;
+  background: none;
+  font-family: 'Manrope', sans-serif;
+  font-size: 18px;
+}
+
+input[type='file']::after {
+  font-family: 'Manrope', sans-serif;
+  font-size: 18px;
+  margin-left: 10px;
+}
+
+.loader-container button {
+  margin-top: 10px;
+  padding: 18px 48px;
+  font-size: 18px;
+  border-radius: 6px;
+  border: none;
+  background: #19b563;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 40px;
+  font-family: 'Manrope', sans-serif;
+}
+
+.loader-container button:hover {
+  opacity: 0.8;
+}
+
+.title {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+.loader-container>img {
+  height: 10vh;
+}
+
+label span {
+  display: inline;
+  font-weight: 700;
+  color: #19b563;
+}
+
+label p {
+  display: inline-block;
+}
+
+label input {
+  display: block;
+  margin-top: 10px;
+}
