@@ -1,22 +1,33 @@
+import { useState } from "react";
 import Plot from "react-plotly.js";
 
 export default function PlotPanel({ candidates, currentIndex }) {
+  const [plot1, setPlot1] = useState({ x: "period", y: "dm", xLog: true, yLog: false });
+  const [plot2, setPlot2] = useState({ x: "period", y: "sn", xLog: true, yLog: false });
+
   if (!candidates || candidates.length === 0) return null;
 
-  // Extract values safely
-  const periods = candidates.map(c => {
-    const f =
-      c.f0_new && c.f0_new > 0 ? c.f0_new : c.f0_old;
-    return f ? 1.0 / f : null; // seconds
-  });
-
-  const dms = candidates.map(c =>
-    c.dm_new ?? c.dm_old ?? null
-  );
-
-  const classifications = candidates.map(
-    c => c.classification || "Unclassified"
-  );
+  const fields = {
+    period: {
+      label: "Period (s)",
+      getValue: c => {
+        const f = c.f0_new && c.f0_new > 0 ? c.f0_new : c.f0_old;
+        return f ? 1.0 / f : null;
+      }
+    },
+    dm: {
+      label: "DM (pc / cm³)",
+      getValue: c => c.dm_new ?? c.dm_old ?? null
+    },
+    sn: {
+      label: "S/N",
+      getValue: c => c["S/N_new"] ?? c["S/N"] ?? null
+    },
+    accel: {
+      label: "Accel (m/s²)",
+      getValue: c => c.accel_new ?? c.accel_old ?? c.accel ?? null
+    }
+  };
 
   const colourMap = {
     "Known Pulsar": "#7b5ce1",
@@ -36,8 +47,10 @@ export default function PlotPanel({ candidates, currentIndex }) {
     "Unclassified",
   ];
 
-  // Helper to get trace for a specific classification
-  const getTraces = (xArr, yArr) => {
+  const getTraces = (conf) => {
+    const xData = candidates.map(fields[conf.x].getValue);
+    const yData = candidates.map(fields[conf.y].getValue);
+
     return labels.map(label => {
       const xFiltered = [];
       const yFiltered = [];
@@ -45,8 +58,8 @@ export default function PlotPanel({ candidates, currentIndex }) {
       candidates.forEach((c, i) => {
         const cClass = c.classification || "Unclassified";
         if (cClass === label) {
-          xFiltered.push(xArr[i]);
-          yFiltered.push(yArr[i]);
+          xFiltered.push(xData[i]);
+          yFiltered.push(yData[i]);
         }
       });
 
@@ -64,77 +77,78 @@ export default function PlotPanel({ candidates, currentIndex }) {
     });
   };
 
-  const sns = candidates.map(c => c["S/N_new"] ?? c["S/N"] ?? null);
+  const renderControls = (id, config, setConfig) => (
+    <div className="plot-controls">
+      <div className="control-row">
+        <div className="control-group">
+          <label>X:</label>
+          <select value={config.x} onChange={e => setConfig({ ...config, x: e.target.value })}>
+            {Object.entries(fields).map(([k, v]) => <option key={k} value={k}>{v.label.split(" (")[0]}</option>)}
+          </select>
+          <label className="checkbox-label">
+            <input type="checkbox" checked={config.xLog} onChange={e => setConfig({ ...config, xLog: e.target.checked })} />
+            Log
+          </label>
+        </div>
+        <div className="control-group">
+          <label>Y:</label>
+          <select value={config.y} onChange={e => setConfig({ ...config, y: e.target.value })}>
+            {Object.entries(fields).map(([k, v]) => <option key={k} value={k}>{v.label.split(" (")[0]}</option>)}
+          </select>
+          <label className="checkbox-label">
+            <input type="checkbox" checked={config.yLog} onChange={e => setConfig({ ...config, yLog: e.target.checked })} />
+            Log
+          </label>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderPlot = (config, setConfig) => {
+    const xVal = fields[config.x].getValue(candidates[currentIndex]);
+    const yVal = fields[config.y].getValue(candidates[currentIndex]);
+
+    return (
+      <div className="plot-box">
+        {renderControls(null, config, setConfig)}
+        <Plot
+          data={[
+            ...getTraces(config),
+            {
+              x: [xVal],
+              y: [yVal],
+              name: "Current",
+              mode: "markers",
+              marker: {
+                size: 14,
+                color: "black",
+                symbol: "circle-open",
+                line: { width: 3 },
+              },
+              showlegend: false,
+            },
+          ]}
+          layout={{
+            title: `${fields[config.x].label} vs ${fields[config.y].label}`,
+            xaxis: { title: fields[config.x].label, type: config.xLog ? "log" : "linear" },
+            yaxis: { title: fields[config.y].label, type: config.yLog ? "log" : "linear" },
+            margin: { l: 60, r: 20, t: 40, b: 45 },
+            autosize: true,
+            showlegend: true,
+            legend: { x: 1, y: 1 },
+          }}
+          useResizeHandler={true}
+          style={{ width: "100%", height: "calc(100% - 40px)" }}
+          config={{ displayModeBar: false }}
+        />
+      </div>
+    );
+  };
 
   return (
     <div className="plot-panel">
-      {/* Period vs DM */}
-      <div className="plot-box">
-        <Plot
-          data={[
-            ...getTraces(periods, dms),
-            {
-              x: [periods[currentIndex]],
-              y: [dms[currentIndex]],
-              name: "Current",
-              mode: "markers",
-              marker: {
-                size: 14,
-                color: "black",
-                symbol: "circle-open",
-                line: { width: 3 },
-              },
-              showlegend: false,
-            },
-          ]}
-          layout={{
-            title: "Period vs DM",
-            xaxis: { title: "Period (s)", type: "log" },
-            yaxis: { title: "DM (pc / cm³)" },
-            margin: { l: 50, r: 20, t: 40, b: 45 },
-            autosize: true,
-            showlegend: true,
-            legend: { x: 1, y: 1 },
-          }}
-          useResizeHandler={true}
-          style={{ width: "100%", height: "100%" }}
-          config={{ displayModeBar: false }}
-        />
-      </div>
-
-      {/* Period vs S/N */}
-      <div className="plot-box">
-        <Plot
-          data={[
-            ...getTraces(periods, sns),
-            {
-              x: [periods[currentIndex]],
-              y: [sns[currentIndex]],
-              name: "Current",
-              mode: "markers",
-              marker: {
-                size: 14,
-                color: "black",
-                symbol: "circle-open",
-                line: { width: 3 },
-              },
-              showlegend: false,
-            },
-          ]}
-          layout={{
-            title: "Period vs S/N",
-            xaxis: { title: "Period (s)", type: "log" },
-            yaxis: { title: "S/N" },
-            margin: { l: 50, r: 20, t: 40, b: 45 },
-            autosize: true,
-            showlegend: true,
-            legend: { x: 1, y: 1 },
-          }}
-          useResizeHandler={true}
-          style={{ width: "100%", height: "100%" }}
-          config={{ displayModeBar: false }}
-        />
-      </div>
+      {renderPlot(plot1, setPlot1)}
+      {renderPlot(plot2, setPlot2)}
     </div>
   );
 }

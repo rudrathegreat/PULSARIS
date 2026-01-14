@@ -154,7 +154,7 @@ body {
 
 .right-column table thead tr>* {
     border-bottom: 2px solid #dcdcdc;
-    width: 11vw;
+    width: 9.5vw;
     text-align: left;
     font-size: 18px;
     padding: 10px;
@@ -172,16 +172,76 @@ table {
 
 .plot-panel {
     display: flex;
-    height: 40vh;
+    height: 48vh;
     gap: 10px;
+    margin-top: -20px;
 }
 
 .plot-panel .plot-box {
     width: 28vw;
-    height: 35vh;
+    height: 45vh;
     padding: 10px;
     border: 2px solid #dcdcdc;
     border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 0px;
+}
+
+.plot-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 0 5px;
+}
+
+.plot-controls label input {
+    margin-top: 0;
+}
+
+.control-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.control-group label {
+    font-weight: 700;
+    font-size: 14px;
+    color: #19b563;
+}
+
+.control-group select {
+    padding: 4px 8px;
+    border: 2px solid #dcdcdc;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: 'Manrope', sans-serif;
+    flex: 1;
+    cursor: pointer;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+    font-size: 13px;
+    color: black;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.checkbox-label input {
+    accent-color: #19b563;
+    cursor: pointer;
 }
 
 .left-column table tr>* {
