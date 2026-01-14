@@ -63,13 +63,6 @@ export default function ClassificationPanel({
           RFI (R)
         </button>
       </div>
-
-      {candidate.classification && (
-        <p style={{ marginTop: "8px", fontSize: "14px" }}>
-          Current classification:{" "}
-          <strong>{candidate.classification}</strong>
-        </p>
-      )}
     </div>
   );
 }

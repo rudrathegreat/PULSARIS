@@ -29,7 +29,10 @@ export default function TopBar({
           <h2>Filter:</h2>
           <select
             value={filter}
-            onChange={e => setFilter(e.target.value)}
+            onChange={e => {
+              setFilter(e.target.value);
+              e.target.blur();
+            }}
           >
             <option value="All">All</option>
             <option value="Unclassified">Unclassified</option>
