@@ -9,6 +9,15 @@ export default function App() {
   const [pulsars, setPulsars] = useState([]);
   const [reviewItems, setReviewItems] = useState([]);
   const [index, setIndex] = useState(0);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+  }, [isDarkMode]);
 
   useEffect(() => {
     Papa.parse(pulsarsCsvUrl, {
@@ -17,7 +26,7 @@ export default function App() {
       dynamicTyping: true,
       complete: (results) => {
         const mappedPulsars = results.data
-          .filter(p => p.JNAME && p.P0) // Ensure valid rows
+          .filter(p => p.JNAME && p.P0)
           .map(p => ({
             name: p.JNAME,
             period: p.P0,
@@ -38,6 +47,7 @@ export default function App() {
           setReviewItems={setReviewItems}
           setPulsars={setPulsars}
           setDataLoaded={setDataLoaded}
+          isDarkMode={isDarkMode}
         />
       ) : (
         <ReviewScreen
@@ -46,6 +56,8 @@ export default function App() {
           index={index}
           setIndex={setIndex}
           pulsars={pulsars}
+          isDarkMode={isDarkMode}
+          setIsDarkMode={setIsDarkMode}
         />
       )}
     </>

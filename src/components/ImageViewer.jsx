@@ -66,15 +66,20 @@ export default function ImageViewer({ image, onClose }) {
                 onMouseUp={handleMouseUp}
                 onMouseLeave={handleMouseUp}
             >
-                <img
-                    src={image.url}
-                    alt={image.name}
+                <div
+                    className="image-wrapper"
                     style={{
                         transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
                         cursor: isPanning ? "grabbing" : "grab",
                     }}
-                    draggable="false"
-                />
+                >
+                    <img
+                        src={image.url}
+                        alt={image.name}
+                        draggable="false"
+                    />
+                    <div className="dark-mode-overlay" />
+                </div>
             </div>
         </div>
     );

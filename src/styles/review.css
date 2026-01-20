@@ -1,3 +1,84 @@
+:root {
+    --bg-color: #ffffff;
+    --text-color: #1a1a1a;
+    --border-color: #dcdcdc;
+    --panel-bg: #fcfcfc;
+    --item-hover: #f7f7f7;
+    --primary-color: #19b563;
+    --accent-color: #19b563;
+}
+
+body.dark-mode {
+    --bg-color: #111;
+    --text-color: #e0e0e0;
+    --border-color: #333333;
+    --panel-bg: #111;
+    --item-hover: #262626;
+    --primary-color: #22c55e;
+}
+
+/* ... existing styles ... */
+
+/* Dark Mode Inversion Overlay */
+.dark-mode-overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #eee;
+    mix-blend-mode: exclusion;
+    pointer-events: none;
+    z-index: 100;
+}
+
+body.dark-mode .dark-mode-overlay {
+    display: block;
+}
+
+/* Ensure containers are correctly sized */
+.candidate-viewer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: transparent;
+    padding: 0;
+}
+
+.image-wrapper {
+    position: relative;
+    display: flex;
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.image-wrapper img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.plot-container {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+/* Specific fix for Plotly plots if they have internal padding */
+.plot-container .js-plotly-plot {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+.plot-box {
+    display: flex;
+    flex-direction: column;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -6,18 +87,24 @@
 
 body {
     font-family: 'Manrope', sans-serif;
-    background-color: white;
-    color: black;
+    background-color: var(--bg-color);
+    color: var(--text-color);
 }
 
 ::-webkit-scrollbar {
     width: 10px;
-    background: white;
+    background: var(--bg-color);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #19b563;
+    background: var(--primary-color);
     border-radius: 10px;
+}
+
+.review-grid {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100vh;
 }
 
 .top-bar {
@@ -25,12 +112,13 @@ body {
     width: 100%;
     align-items: center;
     padding: 0 20px;
-    color: black;
+    color: var(--text-color);
     font-size: 24px;
     font-weight: 600;
     display: flex;
     justify-content: space-between;
     gap: 10px;
+    background: var(--panel-bg);
 }
 
 .nav-buttons {
@@ -63,13 +151,14 @@ body {
 
 .nav-buttons button {
     padding: 8px 16px;
-    border: 2px solid #dcdcdc;
+    border: 2px solid var(--border-color);
     background: none;
     border-radius: 4px;
-    color: black;
+    color: var(--text-color);
     font-size: 16px;
     cursor: pointer;
     width: 100%;
+    font-family: 'Manrope', sans-serif;
 }
 
 .filter {
@@ -153,7 +242,7 @@ body {
 }
 
 .right-column table thead tr>* {
-    border-bottom: 2px solid #dcdcdc;
+    border-bottom: 2px solid var(--border-color);
     width: 9.5vw;
     text-align: left;
     font-size: 18px;
@@ -332,7 +421,7 @@ table {
 .image-viewer-container img {
     max-width: 90%;
     max-height: 90%;
-    transition: transform 0.1s ease-out;
+    /* transition: transform 0.1s ease-out; */
     user-select: none;
 }
 
@@ -343,20 +432,371 @@ table {
 .right-side {
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: 20px;
+}
+
+.search-bar-container {
+    position: relative;
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    z-index: 1001;
+}
+
+.search-bar {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.search-bar input {
+    width: 100%;
+    max-width: 800px;
+    padding: 8px 20px;
+    border: 2px solid #dcdcdc;
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: 'Manrope', sans-serif;
+    /* transition: border-color 0.2s; */
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: #19b563;
+}
+
+.search-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    width: 100%;
+    max-width: 800px;
+    background: var(--bg-color);
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.dropdown-item {
+    padding: 15px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dropdown-item:last-child {
+    border-bottom: none;
+}
+
+.dropdown-item:hover {
+    background: #f7f7f7;
+    color: #19b563;
+}
+
+.side-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.filter-group-horizontal {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
+
+.section-title-small {
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--primary-color);
+    min-width: 60px;
+    margin-bottom: 0;
+}
+
+.filter-controls {
+    display: flex;
+    gap: 8px;
+    flex: 1;
+}
+
+.side-select {
+    padding: 8px 10px;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: 'Manrope', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    cursor: pointer;
+    flex: 2;
+}
+
+.side-select.order-select {
+    flex: 1;
+    min-width: 70px;
+}
+
+.side-select.full-width {
+    flex: 1;
+}
+
+.side-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* Settings Menu */
+.settings-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.settings-toggle {
+    background: none !important;
+    border: none !important;
+    font-size: 24px !important;
+    cursor: pointer;
+    padding: 12px !important;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color);
+}
+
+.settings-toggle:hover {
+    background: var(--item-hover) !important;
+}
+
+.settings-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 250px;
+    background: var(--panel-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    z-index: 1002;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.settings-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.settings-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 5px 0;
+}
+
+.settings-action-btn {
+    padding: 10px;
+    border-radius: 4px;
+    border: none;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    /* transition: opacity 0.2s; */
+}
+
+.settings-action-btn.reset {
+    background: #ef4444;
+    color: white;
+}
+
+/* Switch Toggle Component */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked+.slider {
+    background-color: var(--primary-color);
+}
+
+input:checked+.slider:before {
+    transform: translateX(24px);
+}
+
+/* Modal / Popup */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(40px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: var(--panel-bg);
+    color: var(--text-color);
+    padding: 50px;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 90%;
+    border: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.modal-content p {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 0px;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.modal-btn {
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-family: 'Manrope', sans-serif;
+    cursor: pointer;
+    border: none;
+    /* transition: opacity 0.2s; */
+}
+
+.modal-btn.primary {
+    background: var(--primary-color);
+    color: white;
+}
+
+.modal-btn.secondary {
+    background: var(--border-color);
+    color: var(--text-color);
+}
+
+/* Dark Mode Overrides for panels */
+body.dark-mode .side-controls,
+body.dark-mode .search-dropdown,
+body.dark-mode .classification-panel,
+body.dark-mode .candidate-viewer,
+body.dark-mode .candidate-summary {
+    /* border-color: var(--border-color); */
+}
+
+body.dark-mode select,
+body.dark-mode input {
+    background: #262626;
+    color: white;
+    border-color: #444;
+}
+
+body.dark-mode .dropdown-item:hover {
+    background: #333;
+}
+
+.reset-btn {
+    padding: 11px 16px;
+    background: #ef4444;
+    border-radius: 4px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    font-weight: 700;
+    font-family: 'Manrope', sans-serif;
 }
 
 button:hover {
     opacity: 0.8;
 }
 
-.top-bar button:hover {
-    opacity: 1;
+.top-bar button:not(.save-btn):not(.reset-btn):not(.close-btn):not(.reset):hover {
     background: #dcdcdc;
+}
+
+.dark-mode .top-bar button:not(.save-btn):not(.reset-btn):not(.close-btn):not(.reset):hover {
+    background: var(--border-color);
 }
 
 @media (max-width: 768px) {
     .cands-info {
         flex-direction: column;
     }
+}
+
+/* Dark Mode Inversion Overlay */
+.dark-mode-overlay {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #eee;
+    mix-blend-mode: exclusion;
+    pointer-events: none;
+    z-index: 100;
+}
+
+body.dark-mode .dark-mode-overlay {
+    display: block;
+}
+
+/* Ensure containers are relative so overlay covers correctly */
+.candidate-viewer,
+.image-viewer-container,
+.plot-box {
+    position: relative;
+    overflow: hidden;
 }

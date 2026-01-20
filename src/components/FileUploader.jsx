@@ -7,15 +7,21 @@ export default function FileUploader({ setCandidates, setImages }) {
       skipEmptyLines: true,
       complete: (res) => {
         setCandidates(
-            res.data.map((r) => ({
-                ...r,
-                classification: "UNCLASSIFIED",
-                period: 1 / parseFloat(r.f0_new),
-                dm_new: parseFloat(r.dm_new),
-                png_name: r.png_file.split("/").pop(), // 👈 KEY FIX
-            }))
-            );
-
+          res.data.map((r) => {
+            const freq = parseFloat(r.f0_new);
+            const period = freq > 0 ? 1 / freq : 0;
+            return {
+              ...r,
+              // Check if classification already exists in the CSV
+              classification: r.classification || "UNCLASSIFIED",
+              period: period,
+              dm_new: parseFloat(r.dm_new),
+              png_name: r.png_file.split("/").pop(),
+              _originalRow: r, // Store original row for export
+              _hadClassificationColumn: "classification" in r,
+            };
+          })
+        );
       },
     });
   };
@@ -23,10 +29,10 @@ export default function FileUploader({ setCandidates, setImages }) {
   const handleImages = (e) => {
     const files = {};
     [...e.target.files].forEach((f) => {
-        files[f.name] = URL.createObjectURL(f);
+      files[f.name] = URL.createObjectURL(f);
     });
     setImages(files);
-};
+  };
 
   return (
     <div className="upload">

@@ -111,36 +111,39 @@ export default function PlotPanel({ candidates, currentIndex }) {
     return (
       <div className="plot-box">
         {renderControls(null, config, setConfig)}
-        <Plot
-          data={[
-            ...getTraces(config),
-            {
-              x: [xVal],
-              y: [yVal],
-              name: "Current",
-              mode: "markers",
-              marker: {
-                size: 14,
-                color: "black",
-                symbol: "circle-open",
-                line: { width: 3 },
+        <div className="plot-container">
+          <Plot
+            data={[
+              ...getTraces(config),
+              {
+                x: [xVal],
+                y: [yVal],
+                name: "Current",
+                mode: "markers",
+                marker: {
+                  size: 14,
+                  color: "black",
+                  symbol: "circle-open",
+                  line: { width: 3 },
+                },
+                showlegend: false,
               },
-              showlegend: false,
-            },
-          ]}
-          layout={{
-            title: `${fields[config.x].label} vs ${fields[config.y].label}`,
-            xaxis: { title: fields[config.x].label, type: config.xLog ? "log" : "linear" },
-            yaxis: { title: fields[config.y].label, type: config.yLog ? "log" : "linear" },
-            margin: { l: 60, r: 20, t: 40, b: 45 },
-            autosize: true,
-            showlegend: true,
-            legend: { x: 1, y: 1 },
-          }}
-          useResizeHandler={true}
-          style={{ width: "100%", height: "calc(100% - 40px)" }}
-          config={{ displayModeBar: false }}
-        />
+            ]}
+            layout={{
+              title: `${fields[config.x].label} vs ${fields[config.y].label}`,
+              xaxis: { title: fields[config.x].label, type: config.xLog ? "log" : "linear" },
+              yaxis: { title: fields[config.y].label, type: config.yLog ? "log" : "linear" },
+              margin: { l: 60, r: 20, t: 40, b: 45 },
+              autosize: true,
+              showlegend: true,
+              legend: { x: 1, y: 1 },
+            }}
+            useResizeHandler={true}
+            style={{ width: "100%", height: "100%" }}
+            config={{ displayModeBar: false }}
+          />
+          <div className="dark-mode-overlay" />
+        </div>
       </div>
     );
   };

@@ -37,9 +37,9 @@ export default function CandidateSummary({ candidate }) {
 
   return (
     <div className="candidate-summary">
+      <h3 style={{ paddingLeft: "20px" }}>Candidate Summary</h3>
       <div className="cands-info">
         <div className="first-column">
-          <h3>Candidate Summary</h3>
           <p><b>PNG File: </b> {filename}</p>
           <p><b>Period (ms): </b> {fmt(period_ms, 3)}</p>
           <p><b>DM (pc / cm³): </b> {fmt(candidate.dm_new ?? candidate.dm_old, 2)}</p>

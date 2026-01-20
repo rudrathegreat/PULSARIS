@@ -11,6 +11,8 @@ export default function LoaderScreen({
 }) {
   const [pngFiles, setPngFiles] = useState([]);
   const [csvFile, setCsvFile] = useState(null);
+  const [showPopup, setShowPopup] = useState(false);
+  const [pendingItems, setPendingItems] = useState([]);
 
   const loadData = () => {
     if (!pngFiles || pngFiles.length === 0) {
@@ -36,6 +38,8 @@ export default function LoaderScreen({
       header: true,
       dynamicTyping: true,
       complete: res => {
+        const hasClassification = res.data.some(r => "classification" in r && r.classification);
+
         const items = res.data
           .filter(r => {
             if (!r.png_file) return false;
@@ -45,20 +49,43 @@ export default function LoaderScreen({
           .map(r => {
             const csvBasename = r.png_file.split(/[/\\]/).pop();
             return {
-              candidate: { ...r, classification: "" },
+              candidate: {
+                ...r,
+                classification: r.classification || "Unclassified",
+                png_name: csvBasename,
+                _originalRow: { ...r }
+              },
               image: imageMap[csvBasename],
             };
           });
 
         if (items.length === 0) {
-          alert("No matching PNG files found for the rows in your CSV. Please ensure the PNG files in the folder match the 'png_file' column in your CSV.");
+          alert("No matching PNG files found. Please ensure files match the 'png_file' column.");
           return;
         }
 
-        setReviewItems(items);
-        setDataLoaded(true);
+        if (hasClassification) {
+          setPendingItems(items);
+          setShowPopup(true);
+        } else {
+          setReviewItems(items);
+          setDataLoaded(true);
+        }
       },
     });
+  };
+
+  const handlePopupChoice = (clear) => {
+    const finalItems = clear
+      ? pendingItems.map(it => ({
+        ...it,
+        candidate: { ...it.candidate, classification: "Unclassified" }
+      }))
+      : pendingItems;
+
+    setReviewItems(finalItems);
+    setDataLoaded(true);
+    setShowPopup(false);
   };
 
   return (
@@ -90,6 +117,19 @@ export default function LoaderScreen({
       </div>
 
       <button onClick={loadData}>Load Data</button>
+
+      {showPopup && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>Existing Classifications Found</h2>
+            <p>Your CSV file already contains classifications. Would you like to keep them or clear them and start from scratch?</p>
+            <div className="modal-buttons">
+              <button className="modal-btn secondary" onClick={() => handlePopupChoice(false)}>Keep Existing</button>
+              <button className="modal-btn primary" onClick={() => handlePopupChoice(true)}>Clear All</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
