@@ -7,6 +7,7 @@
   justify-content: center;
   align-items: center;
   gap: 20px;
+  padding: 5vh 0;
 }
 
 .loader-container h1 {
@@ -51,8 +52,11 @@ input[type='file']::after {
   margin-left: 10px;
 }
 
+.modal-buttons button {
+  margin-top: 40px;
+}
+
 .loader-container button {
-  margin-top: 10px;
   padding: 18px 48px;
   font-size: 18px;
   border-radius: 6px;
@@ -61,7 +65,6 @@ input[type='file']::after {
   color: white;
   font-weight: 600;
   cursor: pointer;
-  margin-top: 40px;
   font-family: 'Manrope', sans-serif;
 }
 
@@ -92,4 +95,184 @@ label p {
 label input {
   display: block;
   margin-top: 10px;
+}
+
+/* --- Added Feature: Survey Search --- */
+
+.survey-section {
+  width: 100%;
+  max-width: 700px;
+  padding: 30px;
+  border-radius: 12px;
+}
+
+.survey-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.survey-header h3 {
+  font-size: 24px;
+  color: #111;
+  font-weight: 600;
+  margin: 0;
+  width: auto;
+  border: none;
+  padding: 0;
+}
+
+.mode-toggle {
+  display: flex;
+  background: #f0f0f0;
+  padding: 4px;
+  border-radius: 8px;
+  gap: 4px;
+}
+
+.mode-toggle button {
+  margin: 0 !important;
+  padding: 8px 16px !important;
+  font-size: 14px !important;
+  border-radius: 6px !important;
+  background: transparent !important;
+  color: #666 !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+  margin-top: 0 !important;
+  cursor: pointer !important;
+  border: none !important;
+}
+
+.mode-toggle button.active {
+  background: white !important;
+  color: #19b563 !important;
+}
+
+.survey-search-box {
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+}
+
+.input-field {
+  width: 100%;
+}
+
+.input-field p {
+  font-size: 15px;
+  font-weight: 500;
+  color: #111;
+  margin-bottom: 10px;
+}
+
+.input-field input {
+  width: 100%;
+  padding: 14px 20px;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  font-size: 16px;
+  font-family: 'Manrope', sans-serif;
+  outline: none;
+}
+
+.input-field input:focus {
+  border-color: #19b563;
+}
+
+.input-field.double {
+  display: flex;
+  gap: 20px;
+}
+
+.input-field.double .field {
+  flex: 1;
+}
+
+.manual-coords-container {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 100%;
+}
+
+.map-selector {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  background: #1a1a1a;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: crosshair;
+  border: 2px solid #333;
+}
+
+.map-selector:hover {
+  border-color: #19b563;
+}
+
+.map-image {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  display: block;
+}
+
+.map-marker {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #19b563;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.map-marker::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  background: #19b563;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.loader-container .search-bar-container {
+  position: relative;
+  display: initial;
+  width: 100%;
+}
+
+.loader-container .search-dropdown {
+  position: absolute;
+  top: calc(100% + 5px);
+  width: 100%;
+  background: white;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1001;
+}
+
+.dropdown-item {
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 15px;
+  border-bottom: 1px solid #f0f0f0;
+  color: #111;
+  font-weight: 500;
+}
+
+.dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.dropdown-item:hover {
+  background: #f7f7f7;
+  color: #19b563;
 }

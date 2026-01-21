@@ -43,6 +43,20 @@ export default function CandidateSummary({ candidate }) {
           <p><b>PNG File: </b> {filename}</p>
           <p><b>Period (ms): </b> {fmt(period_ms, 3)}</p>
           <p><b>DM (pc / cm³): </b> {fmt(candidate.dm_new ?? candidate.dm_old, 2)}</p>
+          {(() => {
+            const getV = (p) => {
+              const k = Object.keys(candidate).find(k => k.toLowerCase().replace(/[^a-z]/g, '').includes(p));
+              return k ? candidate[k] : undefined;
+            };
+            const ra = getV('ra');
+            const dec = getV('dec');
+            return (
+              <>
+                {ra !== undefined && <p><b>RA: </b> {ra}</p>}
+                {dec !== undefined && <p><b>Dec: </b> {dec}</p>}
+              </>
+            );
+          })()}
         </div>
         <div className="second-column">
           <p><b>S/N: </b> {fmt(candidate["S/N_new"] ?? candidate["S/N"], 2)}</p>
