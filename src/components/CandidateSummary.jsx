@@ -48,7 +48,10 @@ export default function CandidateSummary({ candidate }) {
           <p><b>S/N: </b> {fmt(candidate["S/N_new"] ?? candidate["S/N"], 2)}</p>
           <p><b>Acceleration: </b> {fmt(candidate.acc_new, 4)}</p>
           <p><b>Classification: </b></p>
-          <p className="tag" style={tagStyle}>{candidate.classification || "Unclassified"}</p>
+          <div className="tag-container" style={tagStyle}>
+            <p className="tag">{candidate.classification || "Unclassified"}</p>
+            <div className="dark-mode-overlay"></div>
+          </div>
         </div>
       </div>
       {/* <table>

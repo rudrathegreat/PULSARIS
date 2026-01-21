@@ -1,11 +1,16 @@
 import { useState } from "react";
 import Plot from "react-plotly.js";
 
-export default function PlotPanel({ candidates, currentIndex }) {
-  const [plot1, setPlot1] = useState({ x: "period", y: "dm", xLog: true, yLog: false });
-  const [plot2, setPlot2] = useState({ x: "period", y: "sn", xLog: true, yLog: false });
+export default function PlotPanel({
+  allCandidates,
+  filteredCandidates,
+  currentCandidate,
+  onSelectCandidate
+}) {
+  const [plot1, setPlot1] = useState({ x: "period", y: "dm", xLog: true, yLog: false, isLinked: false });
+  const [plot2, setPlot2] = useState({ x: "period", y: "sn", xLog: true, yLog: false, isLinked: false });
 
-  if (!candidates || candidates.length === 0) return null;
+  if (!allCandidates) return null;
 
   const fields = {
     period: {
@@ -47,25 +52,28 @@ export default function PlotPanel({ candidates, currentIndex }) {
     "Unclassified",
   ];
 
-  const getTraces = (conf) => {
-    const xData = candidates.map(fields[conf.x].getValue);
-    const yData = candidates.map(fields[conf.y].getValue);
+  const getTraces = (conf, cands) => {
+    const xData = cands.map(fields[conf.x].getValue);
+    const yData = cands.map(fields[conf.y].getValue);
 
     return labels.map(label => {
       const xFiltered = [];
       const yFiltered = [];
+      const customDataFiltered = [];
 
-      candidates.forEach((c, i) => {
+      cands.forEach((c, i) => {
         const cClass = c.classification || "Unclassified";
         if (cClass === label) {
           xFiltered.push(xData[i]);
           yFiltered.push(yData[i]);
+          customDataFiltered.push(c);
         }
       });
 
       return {
         x: xFiltered,
         y: yFiltered,
+        customdata: customDataFiltered,
         name: label,
         mode: "markers",
         type: "scatter",
@@ -75,6 +83,15 @@ export default function PlotPanel({ candidates, currentIndex }) {
         },
       };
     });
+  };
+
+  const handlePlotClick = (data) => {
+    if (data.points && data.points.length > 0) {
+      const cand = data.points[0].customdata;
+      if (cand && onSelectCandidate) {
+        onSelectCandidate(cand);
+      }
+    }
   };
 
   const renderControls = (id, config, setConfig) => (
@@ -100,16 +117,29 @@ export default function PlotPanel({ candidates, currentIndex }) {
             Log
           </label>
         </div>
+        <div className="control-group link-group">
+          <label className="checkbox-label">
+            <input
+              type="checkbox"
+              checked={config.isLinked}
+              onChange={e => setConfig({ ...config, isLinked: e.target.checked })}
+            />
+            Link
+          </label>
+        </div>
       </div>
     </div>
   );
 
   const renderPlot = (config, setConfig) => {
-    const currentCand = candidates[currentIndex];
-    const xVal = currentCand ? fields[config.x].getValue(currentCand) : null;
-    const yVal = currentCand ? fields[config.y].getValue(currentCand) : null;
+    const activeCandidates = config.isLinked ? filteredCandidates : allCandidates;
+    const xVal = currentCandidate ? fields[config.x].getValue(currentCandidate) : null;
+    const yVal = currentCandidate ? fields[config.y].getValue(currentCandidate) : null;
 
-    const currentTrace = currentCand ? [{
+    // Check if the current candidate is present in the active list (e.g. if it's filtered out)
+    const isPresent = currentCandidate && activeCandidates.includes(currentCandidate);
+
+    const currentTrace = isPresent ? [{
       x: [xVal],
       y: [yVal],
       name: "Current",
@@ -129,7 +159,7 @@ export default function PlotPanel({ candidates, currentIndex }) {
         <div className="plot-container">
           <Plot
             data={[
-              ...getTraces(config),
+              ...getTraces(config, activeCandidates),
               ...currentTrace
             ]}
             layout={{
@@ -144,6 +174,7 @@ export default function PlotPanel({ candidates, currentIndex }) {
             useResizeHandler={true}
             style={{ width: "100%", height: "100%" }}
             config={{ displayModeBar: false }}
+            onClick={handlePlotClick}
           />
           <div className="dark-mode-overlay" />
         </div>

@@ -34,7 +34,8 @@ export default function ClassificationPanel({
           disabled={disabled}
           style={disabled ? { opacity: 0.5, cursor: "not-allowed" } : {}}
         >
-          Known Pulsar (P)
+          <span className="btn-text">Known Pulsar (P)</span>
+          <div className="dark-mode-overlay" />
         </button>
 
         <button
@@ -43,7 +44,8 @@ export default function ClassificationPanel({
           disabled={disabled}
           style={disabled ? { opacity: 0.5, cursor: "not-allowed" } : {}}
         >
-          Tier 1 Candidate (1)
+          <span className="btn-text">Tier 1 Candidate (1)</span>
+          <div className="dark-mode-overlay" />
         </button>
 
         <button
@@ -52,7 +54,8 @@ export default function ClassificationPanel({
           disabled={disabled}
           style={disabled ? { opacity: 0.5, cursor: "not-allowed" } : {}}
         >
-          Tier 2 Candidate (2)
+          <span className="btn-text">Tier 2 Candidate (2)</span>
+          <div className="dark-mode-overlay" />
         </button>
 
         <button
@@ -61,7 +64,8 @@ export default function ClassificationPanel({
           disabled={disabled}
           style={disabled ? { opacity: 0.5, cursor: "not-allowed" } : {}}
         >
-          Noise (N)
+          <span className="btn-text">Noise (N)</span>
+          <div className="dark-mode-overlay" />
         </button>
 
         <button
@@ -70,7 +74,8 @@ export default function ClassificationPanel({
           disabled={disabled}
           style={disabled ? { opacity: 0.5, cursor: "not-allowed" } : {}}
         >
-          RFI (R)
+          <span className="btn-text">RFI (R)</span>
+          <div className="dark-mode-overlay" />
         </button>
       </div>
     </div>

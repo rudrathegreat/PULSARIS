@@ -227,7 +227,10 @@ export default function ReviewScreen({
         <div className="left-column">
           {total > 0 ? (
             <>
-              <CandidateViewer image={item.image} />
+              <CandidateViewer
+                image={item.image}
+                onZoom={() => setShowZoom(true)}
+              />
               <CandidateSummary candidate={item.candidate} />
             </>
           ) : (
@@ -298,8 +301,10 @@ export default function ReviewScreen({
           />
 
           <PlotPanel
-            candidates={reviewItems.map(r => r.candidate)}
-            currentIndex={item ? reviewItems.findIndex(it => it.candidate === item.candidate) : -1}
+            allCandidates={reviewItems.map(it => it.candidate)}
+            filteredCandidates={filteredItems.map(it => it.candidate)}
+            currentCandidate={item ? item.candidate : null}
+            onSelectCandidate={handleSelectCandidate}
           />
         </div>
       </div>
