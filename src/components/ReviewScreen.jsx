@@ -204,38 +204,16 @@ export default function ReviewScreen({
     return <div className="review-grid"><p>No data loaded</p></div>;
   }
 
-  if (total === 0) {
-    return (
-      <div className="review-grid">
-        <TopBar
-          index={0}
-          setIndex={setIndex}
-          total={0}
-          onSave={handleSave}
-          onZoom={() => { }}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          onReset={handleReset}
-          allCandidates={reviewItems.map(it => it.candidate)}
-          onSelectCandidate={handleSelectCandidate}
-          isDarkMode={isDarkMode}
-          setIsDarkMode={setIsDarkMode}
-        />
-        <div className="main"><p>No candidates match the current filter.</p></div>
-      </div>
-    );
-  }
-
-  const item = filteredItems[safeIndex];
+  const item = total > 0 ? filteredItems[safeIndex] : null;
 
   return (
     <div className="review-grid">
       <TopBar
-        index={safeIndex}
+        index={total > 0 ? safeIndex : 0}
         setIndex={setIndex}
         total={total}
         onSave={handleSave}
-        onZoom={() => setShowZoom(true)}
+        onZoom={() => total > 0 && setShowZoom(true)}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
         onReset={handleReset}
@@ -247,14 +225,22 @@ export default function ReviewScreen({
       />
       <div className="main">
         <div className="left-column">
-          <CandidateViewer image={item.image} />
-          <CandidateSummary candidate={item.candidate} />
+          {total > 0 ? (
+            <>
+              <CandidateViewer image={item.image} />
+              <CandidateSummary candidate={item.candidate} />
+            </>
+          ) : (
+            <div className="no-matches-message">
+              <p>No candidates match the current filter.</p>
+            </div>
+          )}
         </div>
         <div className="right-column">
           <ClassificationPanel
-            candidate={item.candidate}
+            candidate={item ? item.candidate : null}
             setCandidates={setReviewItems}
-            index={reviewItems.findIndex(it => it === item)} // original index for ClassificationPanel
+            index={item ? reviewItems.findIndex(it => it === item) : -1}
             onClassify={() => {
               if (safeIndex < total - 1) {
                 setTimeout(goNext, 150);
@@ -307,18 +293,18 @@ export default function ReviewScreen({
           </div>
 
           <PulsarMatches
-            candidate={item.candidate}
+            candidate={item ? item.candidate : null}
             pulsars={pulsars}
           />
 
           <PlotPanel
             candidates={reviewItems.map(r => r.candidate)}
-            currentIndex={reviewItems.findIndex(it => it.candidate === item.candidate)}
+            currentIndex={item ? reviewItems.findIndex(it => it.candidate === item.candidate) : -1}
           />
         </div>
       </div>
 
-      {showZoom && (
+      {showZoom && item && (
         <ImageViewer
           image={item.image}
           onClose={() => setShowZoom(false)}

@@ -105,8 +105,23 @@ export default function PlotPanel({ candidates, currentIndex }) {
   );
 
   const renderPlot = (config, setConfig) => {
-    const xVal = fields[config.x].getValue(candidates[currentIndex]);
-    const yVal = fields[config.y].getValue(candidates[currentIndex]);
+    const currentCand = candidates[currentIndex];
+    const xVal = currentCand ? fields[config.x].getValue(currentCand) : null;
+    const yVal = currentCand ? fields[config.y].getValue(currentCand) : null;
+
+    const currentTrace = currentCand ? [{
+      x: [xVal],
+      y: [yVal],
+      name: "Current",
+      mode: "markers",
+      marker: {
+        size: 14,
+        color: "black",
+        symbol: "circle-open",
+        line: { width: 3 },
+      },
+      showlegend: false,
+    }] : [];
 
     return (
       <div className="plot-box">
@@ -115,19 +130,7 @@ export default function PlotPanel({ candidates, currentIndex }) {
           <Plot
             data={[
               ...getTraces(config),
-              {
-                x: [xVal],
-                y: [yVal],
-                name: "Current",
-                mode: "markers",
-                marker: {
-                  size: 14,
-                  color: "black",
-                  symbol: "circle-open",
-                  line: { width: 3 },
-                },
-                showlegend: false,
-              },
+              ...currentTrace
             ]}
             layout={{
               title: `${fields[config.x].label} vs ${fields[config.y].label}`,

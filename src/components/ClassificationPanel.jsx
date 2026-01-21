@@ -4,9 +4,8 @@ export default function ClassificationPanel({
   index,
   onClassify,
 }) {
-  if (!candidate) return null;
-
   const setClass = label => {
+    if (!candidate) return;
     setCandidates(prev => {
       const updated = [...prev];
       updated[index] = {
@@ -21,7 +20,8 @@ export default function ClassificationPanel({
     if (onClassify) onClassify(label);
   };
 
-  const isActive = label => candidate.classification === label;
+  const isActive = label => candidate?.classification === label;
+  const disabled = !candidate;
 
   return (
     <div>
@@ -31,6 +31,8 @@ export default function ClassificationPanel({
         <button
           className={`btn-known ${isActive("Known Pulsar") ? "active" : ""}`}
           onClick={() => setClass("Known Pulsar")}
+          disabled={disabled}
+          style={disabled ? { opacity: 0.5, cursor: "not-allowed" } : {}}
         >
           Known Pulsar (P)
         </button>
@@ -38,6 +40,8 @@ export default function ClassificationPanel({
         <button
           className={`btn-tier1 ${isActive("Tier 1") ? "active" : ""}`}
           onClick={() => setClass("Tier 1")}
+          disabled={disabled}
+          style={disabled ? { opacity: 0.5, cursor: "not-allowed" } : {}}
         >
           Tier 1 Candidate (1)
         </button>
@@ -45,6 +49,8 @@ export default function ClassificationPanel({
         <button
           className={`btn-tier2 ${isActive("Tier 2") ? "active" : ""}`}
           onClick={() => setClass("Tier 2")}
+          disabled={disabled}
+          style={disabled ? { opacity: 0.5, cursor: "not-allowed" } : {}}
         >
           Tier 2 Candidate (2)
         </button>
@@ -52,6 +58,8 @@ export default function ClassificationPanel({
         <button
           className={`btn-noise ${isActive("Noise") ? "active" : ""}`}
           onClick={() => setClass("Noise")}
+          disabled={disabled}
+          style={disabled ? { opacity: 0.5, cursor: "not-allowed" } : {}}
         >
           Noise (N)
         </button>
@@ -59,6 +67,8 @@ export default function ClassificationPanel({
         <button
           className={`btn-rfi ${isActive("RFI") ? "active" : ""}`}
           onClick={() => setClass("RFI")}
+          disabled={disabled}
+          style={disabled ? { opacity: 0.5, cursor: "not-allowed" } : {}}
         >
           RFI (R)
         </button>
